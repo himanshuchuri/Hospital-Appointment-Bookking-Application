@@ -1,111 +1,415 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 void main() => runApp(MyApp());
+
+const PrimaryColor = const Color(0xFFFFFFFF); //(oorrggbb)
+const PriCo = const Color(0xFFF3F3F3);
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      home:  FirstScreen(),
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primaryColor: PrimaryColor,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
+    _launchURL() async {
+      const url = 'tel:9833933212';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+
+    double scrheight = MediaQuery.of(context).size.height ;
+    double scrwidth = MediaQuery.of(context).size.width ;
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      appBar:
+      AppBar(
+        iconTheme: IconThemeData(color: Colors.black),
+        title:
+        Container(
+          padding: EdgeInsets.only(left: scrwidth*0.3),
+          child: Image(
+            image: AssetImage('assets/logo.png'), height: scrheight*0.3, width:scrwidth*0.3,
+          ),
+        ),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView( child: BodyWidget()),
+      endDrawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Container(
+              height: scrheight*0.26,
+              child: DrawerHeader(
+
+                child:Center( child: Text('\n Menu', style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 40,
+                ),
+                ),
+                ),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/ablr.jpg'),
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            ListTile(
+              title: Text('Book an Appointment'),
+              onTap: () {
+                  Navigator.pop(context);
+               // Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                //  return  BkAppt();},),);
+              },
             ),
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('Manage Your Appointments'),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('Reports'),
+              onTap: () {
+
+                Navigator.pop(context);
+              },
+            ),
+
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('About Us'),
+              onTap: () {
+                Navigator.pop(context);
+                //Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                 // return  AbtScreen();},),);
+              },
+            ),
+
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('Blogs'),
+              onTap: () {
+                Navigator.pop(context);
+               // Navigator.of(context).push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+                 // return  BlogScreen();},),);
+              },
+            ),
+
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('Login/Logout'),
+              onTap: () {
+                Navigator.pop(context);
+                //Navigator.pushReplacement(context, MaterialPageRoute( builder:(BuildContext context) => MyAppOtp()),);
+              },
+            ),
+            Divider(thickness: 2.0,),
+
+            ListTile(
+              title: Text('View Profile'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(thickness: 2.0,),
+
+            // Container(
+            //color: Colors.red,
+            /*child:*/ Column(
+              children: <Widget>[
+                ListTile(
+
+                  title: Text('Emergency',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 30,
+                    ),
+                  ),
+                  onTap: () {
+                    _launchURL();
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    //Navigator.pop(context);
+                  },
+                  leading: Icon(Icons.phone, color: Colors.red,),
+                ),
+                ListTile(
+                  title: Text('+91 1234567890', style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 20,
+                  ),),
+                  onTap: () {
+                    _launchURL();
+                    // Update the state of the app
+                    // ...
+                    // Then close the drawer
+                    //Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+            //),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+class BodyWidget extends StatefulWidget{
+  @override
+  _BodyWidgetState createState() => _BodyWidgetState();
+}
+
+class _BodyWidgetState extends State<BodyWidget>{
+  @override
+  Widget build(BuildContext context) {
+    List<String> photos = [
+      'assets/hc11.jpg',
+      'assets/hc12.jpg',
+      'assets/hc13.png',
+      'assets/hc14.png',
+    ];
+
+    List<String> photosC = [
+      'assets/research.png',
+      'assets/icon.png',
+      'assets/heart.png',
+    ];
+
+    List<String> textC = [
+      ' I am writing to thank you \n for my successful heart \n operation. Post surgery, \n your excellent care has \n helped me recuperate \n faster. ',
+      ' A big thanks to \n Dr. Amit K. Mandal, for \n treating my ailing and  \n critically sick Grand Ma so kindly \n and diligently at \n Fortis Hospital, Mohali. ',
+      'Thanks for an extremely \n nice treatment provided \n at Mulund Fortis Hospital \n by Dr. Naresh Mehta \n & his team.',
+      'We thank the management \n and staff in providing \n great health care facilities. \n The  medical team head \n Dr. Panda, \n has a wealth of experience. \n WELL DONE!!! '
+    ];
+
+    List<String> textN = [
+      'Dr Nelson Rias',
+      'Elizabeth Bluesons',
+      'Crap Bag',
+      'Tappu Gada',
+    ];
+
+    void redirectpg(){
+      Navigator.of(context)
+          .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+        return  FirstScreen();},),);}
+
+    void abtustpg(){
+      Navigator.of(context)
+          .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+        return  FirstScreen();},),);
+    }
+    // TODO: implement build
+    double scrheight = MediaQuery.of(context).size.height ;
+    double scrwidth = MediaQuery.of(context).size.width ;
+    return Align(
+      alignment: Alignment.topLeft,
+      child: SafeArea(
+        left: true,
+        top: true,
+        right: true,
+        bottom: true,
+        minimum: const EdgeInsets.all(16.0),
+        child: Column(
+          children: <Widget>[
+
+            Container(
+              child:
+              CarouselSlider(
+                enableInfiniteScroll: true,
+                initialPage: 0,
+                reverse: false,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 3),
+                autoPlayAnimationDuration: Duration(milliseconds: 800),
+                pauseAutoPlayOnTouch: Duration(seconds: 10),
+                height: scrheight*.32,
+                items: [0,1,2].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Column(
+                        children: <Widget> [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(1, 240, 240, 240),
+                            ),
+                            child: Image(image: AssetImage(photos[i]),
+                              width: scrwidth,),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: scrheight*.02,),
+                            decoration: BoxDecoration(
+                                color: Color.fromARGB(1, 240, 240, 240)
+                            ),
+                            child: Center(
+                                child: OutlineButton(onPressed:() => redirectpg(),child: Text('Know More',), color: Colors.transparent,
+                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),),
+                                  borderSide: BorderSide(color: Colors.black),
+                                )
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+
+            Divider(color: Colors.black,),
+            Container(height: scrheight*0.02,),
+            Column(
+              children: <Widget> [
+                Container(
+                  height: scrheight*0.13,
+                  child:
+                  CarouselSlider(
+                    enableInfiniteScroll: true,
+                    initialPage: 0,
+                    reverse: false,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(milliseconds: 2500),
+                    autoPlayAnimationDuration: Duration(milliseconds: 400),
+                    pauseAutoPlayOnTouch: Duration(seconds: 5),
+                    items: [0,1,2].map((k) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Column(
+                            children: <Widget> [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(1, 240, 240, 240),
+                                ),
+                                child: Image(image: AssetImage(photosC[k]), height: scrheight*0.1,
+                                  width: scrwidth*0.07,),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget> [
+                    Text('About Us',textScaleFactor: 1.5,
+                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),),
+                    Text("\t Fortis Healthcare Limited is a leading integrated healthcare delivery service provider in India. The healthcare verticals of the company primarily comprise hospitals, diagnostics and day care specialty facilities. Currently, the company operates its healthcare delivery services in India, Dubai and Sri Lanka with 36 healthcare facilities (including projects under development), and over 410 diagnostics centres.", textScaleFactor: 1.25,
+                      style: TextStyle(fontSize: 14.0),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: scrheight*.02,),
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(1, 240, 240, 240)
+                      ),
+                      child: Center(
+                          child: OutlineButton(onPressed:() => abtustpg(),child: Text('Know More',), color: Colors.transparent,
+                            shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),),
+                            borderSide: BorderSide(color: Colors.black),
+                          )
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+
+            Divider(color: Colors.black,),
+            Container(height: scrheight*0.03,),
+            CarouselSlider(
+              aspectRatio: 16/9,
+              enableInfiniteScroll: true,
+              initialPage: 0,
+              reverse: false,
+              autoPlay: true,
+              autoPlayInterval: Duration(seconds: 3),
+              autoPlayAnimationDuration: Duration(milliseconds: 800),
+              pauseAutoPlayOnTouch: Duration(seconds: 10),
+              height: scrheight*0.35,
+              items: [0,1,2,3].map((j) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius:  BorderRadius.circular(40.0),
+                        border: Border.all(
+                          width: 1.0,
+                          color: Colors.black45,
+                        ),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Container(width: scrwidth*0.04,),
+                              Image(image: AssetImage('assets/plus.png'),width:scrwidth*.12,height: scrheight*0.12,),
+                              Container(width: scrwidth*0.08,),
+                              Text(textN[j], style: TextStyle( fontSize: 18 ),),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("\"  "+textC[j]+"  \" ",style:TextStyle( fontSize: 16 ),textAlign: TextAlign.center,),
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+
+          ],
+        ),
+      ),
     );
   }
 }
